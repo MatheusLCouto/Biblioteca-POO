@@ -63,6 +63,17 @@ public class RepositorioEmprestimoLista implements RepositorioEmprestimo {
   }
 
   @Override
+  public List<Emprestimo> getAll(Usuario usuario) {
+    List <Emprestimo> emprestimos_por_usuario = new ArrayList<>();
+    for (Emprestimo emprestimo : emprestimos) {
+      if (emprestimo.getUsuario().equals(usuario)) {
+        emprestimos_por_usuario.add(emprestimo);
+      }
+    }
+    return emprestimos_por_usuario;
+  }
+  
+  @Override
   public List<Emprestimo> getAll(Livro livro) {
     List <Emprestimo> emprestimos_por_livro = new ArrayList<>();
     for (Emprestimo emprestimo : emprestimos) {

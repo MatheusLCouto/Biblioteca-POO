@@ -14,7 +14,7 @@ import repository.usuario.UsuarioNaoCadastradoException;
 import model.usuario.Usuario;
 import repository.emprestimo.RepositorioEmprestimo;
 import repository.emprestimo.LivroJaEmprestadoException;
-//import repository.emprestimo.EmprestimoJaRealizadoException;
+import repository.emprestimo.EmprestimoJaRealizadoException;
 import repository.emprestimo.EmprestimoNaoEncontradoException;
 import model.emprestimo.Emprestimo;
 import repository.reserva.RepositorioReserva;
@@ -197,6 +197,10 @@ public class BibliotecaFacade {
     emprestimo.setSituacao(situacao);
   }
 
+  public List<Emprestimo> getAllEmprestimos(Usuario usuario) {
+    return repositorioEmprestimo.getAll(usuario);
+  }
+  
   public List<Emprestimo> getAllEmprestimos(Livro livro) {
     return repositorioEmprestimo.getAll(livro);
   }
@@ -283,6 +287,10 @@ public class BibliotecaFacade {
         System.err.println(ex);
       }
     }
+  }
+
+  public List<Reserva> getAllReservas(Usuario usuario) {
+    return repositorioReserva.getAll(usuario);
   }
   
   public List<Reserva> getAllReservas(Livro livro) {

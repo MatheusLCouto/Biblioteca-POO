@@ -2,9 +2,9 @@ package app;
 
 import facade.BibliotecaFacade;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.List;
+import java.util.ArrayList;
 
 import model.livro.Livro;
 import model.usuario.Usuario;
@@ -13,8 +13,6 @@ import model.reserva.Reserva;
 
 import repository.RepositoryException;
 import facade.BibliotecaException;
-
-import javax.swing.*;
 
 class App {
 
@@ -460,8 +458,8 @@ class App {
   private static void listarLivros() {
     limpaTela();
     List<Livro> livros = facade.getAllLivros();
-    System.out.print("Título               Autor                Editora    Ano de Publicação ISBN Situação\n");
-    System.out.print("==================== ==================== ========== ================= ==== ============\n");
+    System.out.printf("Título               Autor                Editora    Ano de Publicação ISBN Situação\n");
+    System.out.printf("==================== ==================== ========== ================= ==== ============\n");
     for (Livro livro : livros) {
       System.out.printf("%-20s ", livro.getTitulo());
       System.out.printf("%-20s ", livro.getAutor());
@@ -582,30 +580,59 @@ class App {
   }
 
   private static void verificarEmprestimo() {
-    limpaTela();
-    List<Livro> livros = facade.getAllLivros();
+    int opcao;
+    List <Emprestimo> emprestimos = new ArrayList<>();
 
-    System.out.println("\t\t\t\t\t\t\tLivros presentes na Biblioteca");
-    System.out.print("\tTítulo               Autor                Editora    Ano de Publicação ISBN\n");
-    System.out.print("\t==================== ==================== ========== ================= ====\n");
-    for (Livro livro : livros) {
-      System.out.printf("\t%-20s ", livro.getTitulo());
-      System.out.printf("%-20s ", livro.getAutor());
-      System.out.printf("%-10s ", livro.getEditora());
-      System.out.printf("%17s ", String.valueOf(livro.getAnoPublicacao()));
-      System.out.printf("%4s\n", livro.getIsbn());
+    while (true) {
+      limpaTela();
+      System.out.println("Verificar Empréstimos");
+      System.out.println("========= ===========");
+      System.out.println("<1> Verificar por usuário");
+      System.out.println("<2> Verificar por livro");
+      System.out.println("<0> Voltar");
+      System.out.println();
+      System.out.print("Escolha uma opção: ");
+    
+      try {
+        opcao = Integer.valueOf(scanner.nextLine());
+      } catch (Exception e) {
+        break;
+      }
+    
+      System.out.println();
+      if (opcao == 1) {
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine();
+        try {
+          Usuario usuario = facade.buscarUsuario(id);
+          emprestimos = facade.getAllEmprestimos(usuario);
+          break;
+        } catch (RepositoryException ex) {
+          System.err.println(ex.getMessage());
+          break;
+        }
+      }
+      else if (opcao == 2) {
+        System.out.print("ISBN do livro: ");
+        String isbn = scanner.nextLine();
+        try {
+          Livro livro = facade.buscarLivro(isbn);
+          emprestimos = facade.getAllEmprestimos(livro);
+          break;
+        } catch (RepositoryException ex) {
+          System.err.println(ex.getMessage());
+          break;
+        }
+      }
+      else if (opcao == 0) {
+        return;
+      }
     }
 
-    System.out.println("\nVerificar Emprestimos");
-    System.out.println("========= ===========");
-    System.out.print("ISBN do Livro: ");
-    String isbn = scanner.nextLine();
-    try {
-      Livro livro = facade.buscarLivro(isbn);
-      System.out.println();
-      List <Emprestimo> emprestimos = facade.getAllEmprestimos(livro);
-      System.out.print("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação\n");
-      System.out.print("=== ==================== ==================== ================== ================= =========\n");
+    if (!emprestimos.isEmpty()) {
+      limpaTela();
+      System.out.printf("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação\n");
+      System.out.printf("=== ==================== ==================== ================== ================= =========\n");
       for (Emprestimo emprestimo : emprestimos) {
         System.out.printf("%3s ", emprestimo.getId());
         System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
@@ -614,8 +641,6 @@ class App {
         System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
         System.out.printf("%9s\n", emprestimo.getSituacao());
       }
-    } catch (RepositoryException ex) {
-      System.err.println(ex.getMessage());
     }
 
     System.out.println();
@@ -642,8 +667,8 @@ class App {
       Emprestimo emprestimoAlterado = new Emprestimo(usuario, livro, dataEmprestimo);
 
       System.out.println();
-      System.out.print("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação\n");
-      System.out.print("=== ==================== ==================== ================== ================= =========\n");
+      System.out.printf("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação\n");
+      System.out.printf("=== ==================== ==================== ================== ================= =========\n");
       System.out.printf("%3s ", emprestimo.getId());
       System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
       System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
@@ -852,19 +877,15 @@ class App {
   private static void listarEmprestimos() {
     limpaTela();
     List<Emprestimo> emprestimos = facade.getAllEmprestimos();
-    System.out.println("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação");
-    System.out.println("=== ==================== ==================== ================== ================= =========");
+    System.out.printf("ID  Usuário              Livro                Data do Empréstimo Data de Devolução Situação\n");
+    System.out.printf("=== ==================== ==================== ================== ================= =========\n");
     for (Emprestimo emprestimo : emprestimos) {
-      String situacao = emprestimo.getSituacao();
-      if (!(situacao.equals("Devolvido"))){
-        System.out.printf("%3s ", emprestimo.getId());
-        System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
-        System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-        System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-        System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
-        System.out.printf("%9s\n", emprestimo.getSituacao());
-      }
-
+      System.out.printf("%3s ", emprestimo.getId());
+      System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
+      System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
+      System.out.printf("%18s ", emprestimo.getDataEmprestimo());
+      System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+      System.out.printf("%9s\n", emprestimo.getSituacao());
     }
 
     System.out.println();
@@ -956,20 +977,7 @@ class App {
   
   private static void verificarReserva() {
     limpaTela();
-    List<Livro> livros = facade.getAllLivros();
-
-    System.out.println("\t\t\t\t\t\t\tLivros presentes na Biblioteca");
-    System.out.print("\tTítulo               Autor                Editora    Ano de Publicação ISBN\n");
-    System.out.print("\t==================== ==================== ========== ================= ====\n");
-    for (Livro livro : livros) {
-      System.out.printf("\t%-20s ", livro.getTitulo());
-      System.out.printf("%-20s ", livro.getAutor());
-      System.out.printf("%-10s ", livro.getEditora());
-      System.out.printf("%17s ", String.valueOf(livro.getAnoPublicacao()));
-      System.out.printf("%4s\n", livro.getIsbn());
-    }
-
-    System.out.println("\nVerificar Reservas");
+    System.out.println("Verificar Reservas");
     System.out.println("========= ========");
     System.out.print("ISBN do Livro: ");
     String isbn = scanner.nextLine();

@@ -17,6 +17,8 @@ public interface RepositorioEmprestimo {
 
   Emprestimo buscarEmprestimo(Usuario usuario, Livro livro) throws EmprestimoNaoEncontradoException, LivroJaEmprestadoException;
 
+  List<Emprestimo> getAll(Usuario usuario);
+
   List<Emprestimo> getAll(Livro livro);
 
   List<Emprestimo> getAll();
