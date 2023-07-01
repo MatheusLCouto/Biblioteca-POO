@@ -662,9 +662,9 @@ class App {
       if (opcao == 1) {
         System.err.println("\nNão há empréstimos realizados para este usuário.");
       }
-      else {
+      else if (opcao == 2) {
         System.err.println("\nNão há empréstimos realizados para este livro.");
-      } 
+      }
     }
 
     System.out.println();
