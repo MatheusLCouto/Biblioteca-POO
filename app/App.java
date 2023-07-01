@@ -664,7 +664,7 @@ class App {
       }
       else if (opcao == 2) {
         System.err.println("\nNão há empréstimos realizados para este livro.");
-      }
+      } 
     }
 
     System.out.println();
@@ -1004,29 +1004,70 @@ class App {
   }
 
   private static void verificarReserva() {
-    limpaTela();
-    List<Livro> livros = facade.getAllLivros();
-
-    System.out.println("\t\t\t\t\t\t\tLivros presentes na Biblioteca");
-    System.out.print("\tTítulo               Autor                Editora    Ano de Publicação ISBN\n");
-    System.out.print("\t==================== ==================== ========== ================= ====\n");
-    for (Livro livro : livros) {
-      System.out.printf("\t%-20s ", livro.getTitulo());
-      System.out.printf("%-20s ", livro.getAutor());
-      System.out.printf("%-10s ", livro.getEditora());
-      System.out.printf("%17s ", String.valueOf(livro.getAnoPublicacao()));
-      System.out.printf("%4s\n", livro.getIsbn());
+    int opcao = 0;
+    List <Livro> livros = facade.getAllLivros();
+    List <Reserva> reservas = new ArrayList<>();
+    
+    while (true) {
+      limpaTela();
+      
+      System.out.println("\t\t\t\t\t\t\tLivros presentes na Biblioteca");
+      System.out.print("\tTítulo               Autor                Editora    Ano de Publicação ISBN\n");
+      System.out.print("\t==================== ==================== ========== ================= ====\n");
+      for (Livro livro : livros) {
+        System.out.printf("\t%-20s ", livro.getTitulo());
+        System.out.printf("%-20s ", livro.getAutor());
+        System.out.printf("%-10s ", livro.getEditora());
+        System.out.printf("%17s ", String.valueOf(livro.getAnoPublicacao()));
+        System.out.printf("%4s\n", livro.getIsbn());
+      }
+      
+      System.out.println("\nVerificar Reservas");
+      System.out.println("========= ========");
+      System.out.println("<1> Verificar por usuário");
+      System.out.println("<2> Verificar por livro");
+      System.out.println("<0> Voltar");
+      System.out.println();
+      System.out.print("Escolha uma opção: ");
+    
+      try {
+        opcao = Integer.valueOf(scanner.nextLine());
+      } catch (Exception e) {
+        break;
+      }
+    
+      System.out.println();
+      if (opcao == 1) {
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine();
+        try {
+          Usuario usuario = facade.buscarUsuario(id);
+          reservas = facade.getAllReservas(usuario);
+          break;
+        } catch (RepositoryException ex) {
+          System.err.println(ex.getMessage());
+          break;
+        }
+      }
+      else if (opcao == 2) {
+        System.out.print("ISBN do livro: ");
+        String isbn = scanner.nextLine();
+        try {
+          Livro livro = facade.buscarLivro(isbn);
+          reservas = facade.getAllReservas(livro);
+          break;
+        } catch (RepositoryException ex) {
+          System.err.println(ex.getMessage());
+          break;
+        }
+      }
+      else if (opcao == 0) {
+        return;
+      }
     }
 
-    System.out.println("\nVerificar Reservas");
-    System.out.println("========= ========");
-    System.out.print("ISBN do Livro: ");
-    String isbn = scanner.nextLine();
-
-    try {
-      Livro livro = facade.buscarLivro(isbn);
-      List<Reserva> reservas = facade.getAllReservas(livro);
-      System.out.println();
+    if (!reservas.isEmpty()) {
+      limpaTela();
       System.out.printf("Usuário              Livro                Data da Solicitação Data de Vencimento Situação\n");
       System.out.printf("==================== ==================== =================== ================== ========\n");
       for (Reserva reserva : reservas) {
@@ -1036,8 +1077,14 @@ class App {
         System.out.printf("%18s ", reserva.getDataVencimento());
         System.out.printf("%8s\n", reserva.getSituacao());
       }
-    } catch (RepositoryException ex) {
-      System.err.println(ex.getMessage());
+    }
+    else {
+      if (opcao == 1) {
+        System.err.println("\nNão há reservas solicitadas para este usuário.");
+      }
+      else if (opcao == 2) {
+        System.err.println("\nNão há reservas solicitadas para este livro.");
+      } 
     }
 
     System.out.println();
