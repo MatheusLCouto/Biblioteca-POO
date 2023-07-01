@@ -14,11 +14,9 @@ import repository.usuario.UsuarioNaoCadastradoException;
 import model.usuario.Usuario;
 import repository.emprestimo.RepositorioEmprestimo;
 import repository.emprestimo.LivroJaEmprestadoException;
-import repository.emprestimo.EmprestimoJaRealizadoException;
 import repository.emprestimo.EmprestimoNaoEncontradoException;
 import model.emprestimo.Emprestimo;
 import repository.reserva.RepositorioReserva;
-import repository.reserva.ReservaJaRealizadaException;
 import repository.reserva.ReservaNaoEncontradaException;
 import model.reserva.Reserva;
 
