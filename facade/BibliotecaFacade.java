@@ -101,13 +101,15 @@ public class BibliotecaFacade {
   public void realizarEmprestimo(Emprestimo emprestimo) throws LivroNaoDisponivelException, LivroJaReservadoException {
     List <Reserva> reservas = getAllReservas();
     for (Reserva reserva : reservas) {
-      if (reserva.getLivro().equals(emprestimo.getLivro())) { 
-        LocalDate dataEmprestimo = emprestimo.getDataEmprestimo(); 
-        LocalDate emprestimoAntes = reserva.getDataVencimento().plusDays(-8);
-        LocalDate emprestimoDepois = reserva.getDataVencimento().plusDays(1);
-        if (dataEmprestimo.isAfter(emprestimoAntes) && dataEmprestimo.isBefore(emprestimoDepois)) {
-          System.err.println("Não é possível realizar o empréstimo para esta data.");
-          throw new LivroJaReservadoException();
+      if (!reserva.getUsuario().equals(emprestimo.getUsuario())) {
+        if (reserva.getLivro().equals(emprestimo.getLivro())) { 
+          LocalDate dataEmprestimo = emprestimo.getDataEmprestimo(); 
+          LocalDate emprestimoAntes = reserva.getDataVencimento().plusDays(-8);
+          LocalDate emprestimoDepois = reserva.getDataVencimento().plusDays(1);
+          if (dataEmprestimo.isAfter(emprestimoAntes) && dataEmprestimo.isBefore(emprestimoDepois)) {
+            System.err.println("Não é possível realizar o empréstimo para esta data.");
+            throw new LivroJaReservadoException();
+          }
         }
       }
     }
