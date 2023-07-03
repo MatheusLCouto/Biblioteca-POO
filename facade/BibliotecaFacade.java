@@ -178,6 +178,7 @@ public class BibliotecaFacade {
     emprestimo.setDataDevolucaoReal(dataDevolucao);
     atualizarSituacaoEmprestimo(emprestimo);
     atualizarSituacaoLivro(emprestimo);
+    emprestimo.setDataDevolucaoEsperada(dataDevolucao);
     repositorioEmprestimo.alterarEmprestimo(emprestimo);
   }
 

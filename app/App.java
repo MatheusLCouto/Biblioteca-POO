@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 
 import model.livro.Livro;
 import model.usuario.Usuario;
@@ -185,25 +186,39 @@ class App {
       Usuario usuario = facade.buscarUsuario(id);
 
       System.out.println();
-      System.out.println("Nome: " + usuario.getNome());
-      System.out.print("Nome (<enter> = Não alterar): ");
-      String nome = scanner.nextLine();
-      if (!nome.equals("")) {
-        usuario.setNome(nome);
+      System.out.printf("Nome                 CPF            Telefone\n");
+      System.out.printf("==================== ============== ==========\n");
+      System.out.printf("%-20s ", usuario.getNome());
+      System.out.printf("%14s ", usuario.getCpf());
+      System.out.printf("%10s\n", usuario.getTelefone());
+
+      System.out.printf("\nAlterar dados? (s/n) ");
+      String resposta = scanner.nextLine();
+      
+      if (resposta.equalsIgnoreCase("s")) {
+        System.out.println("\nNome: " + usuario.getNome());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nNome: ");
+          String nome = scanner.nextLine();
+          usuario.setNome(nome);
+        }
+
+        System.out.println("\nTelefone: " + usuario.getTelefone());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nTelefone: ");
+          String telefone = scanner.nextLine();
+          usuario.setTelefone(telefone);
+        }
+
+        System.out.println();
+
+        facade.alterarUsuario(usuario);
+        System.out.println("Usuário Alterado!");
       }
-
-      System.out.println("Telefone: " + usuario.getTelefone());
-      System.out.print("Telefone (<enter> = Não alterar): ");
-      String telefone = scanner.nextLine();
-      if (!telefone.equals("")) {
-        usuario.setTelefone(telefone);
-      }
-
-      System.out.println();
-
-      facade.alterarUsuario(usuario);
-      System.out.println("Usuário Alterado!");
-
     } catch (RepositoryException ex) {
       System.err.println(ex.getMessage());
     }
@@ -377,41 +392,60 @@ class App {
 
     try {
       Livro livro = facade.buscarLivro(isbn);
+      System.out.println();
+      System.out.printf("Título               Autor                Editora    Ano de Publicação\n");
+      System.out.printf("==================== ==================== ========== =================\n");
+      System.out.printf("%-20s ", livro.getTitulo());
+      System.out.printf("%-20s ", livro.getAutor());
+      System.out.printf("%-10s ", livro.getEditora());
+      System.out.printf("%17s\n", String.valueOf(livro.getAnoPublicacao()));
 
       System.out.println();
-      System.out.println("Título: " + livro.getTitulo());
-      System.out.print("Título (<enter> = Não alterar): ");
-      String titulo = scanner.nextLine();
-      if (!titulo.equals("")) {
-        livro.setTitulo(titulo);
+      System.out.print("Alterar informações? (s/n)? ");
+      String resposta = scanner.nextLine();
+
+      if (resposta.equalsIgnoreCase("s")) {
+        System.out.println("\nTítulo: " + livro.getTitulo());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nTítulo: ");
+          String titulo = scanner.nextLine();
+          livro.setTitulo(titulo);
+        }
+        
+        System.out.println("\nAutor: " + livro.getAutor());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nAutor: ");
+          String autor = scanner.nextLine();
+          livro.setAutor(autor);
+        }
+        
+        System.out.println("\nEditora: " + livro.getEditora());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nEditora: ");
+          String editora = scanner.nextLine();
+          livro.setEditora(editora);
+        }
+        
+        System.out.println("\nAno de Publicação: " + livro.getAnoPublicacao());
+        System.out.print("Alterar? (s/n) ");
+        resposta = scanner.nextLine();
+        if (resposta.equalsIgnoreCase("s")) {
+          System.out.print("\nAno de Publicação: ");
+          String anoPublicacao = scanner.nextLine();
+          livro.setAnoPublicacao(anoPublicacao.charAt(3));
+        }
+
+        System.out.println();
+
+        facade.alterarLivro(livro);
+        System.out.println("Livro Alterado!");
       }
-
-      System.out.println("Autor: " + livro.getAutor());
-      System.out.print("Autor (<enter> = Não alterar): ");
-      String autor = scanner.nextLine();
-      if (!autor.equals("")) {
-        livro.setAutor(autor);
-      }
-
-      System.out.println("Editora: " + livro.getEditora());
-      System.out.print("Editora (<enter> = Não alterar): ");
-      String editora = scanner.nextLine();
-      if (!editora.equals("")) {
-        livro.setEditora(editora);
-      }
-
-      System.out.println("Ano de Publicação: " + livro.getAnoPublicacao());
-      System.out.print("Ano de Publicação (<enter> = Não alterar): ");
-      String anoPublicacao = scanner.nextLine();
-      if (!anoPublicacao.equals("")) {
-        livro.setAnoPublicacao(anoPublicacao.charAt(3));
-      }
-
-      System.out.println();
-
-      facade.alterarLivro(livro);
-      System.out.println("Livro Alterado!");
-
     } catch (RepositoryException ex) {
       System.err.println(ex.getMessage());
     }
@@ -653,8 +687,8 @@ class App {
         System.out.printf("%3s ", emprestimo.getId());
         System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
         System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-        System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-        System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+        System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+        System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
         System.out.printf("%9s\n", emprestimo.getSituacao());
       }
     }
@@ -696,8 +730,8 @@ class App {
       System.out.printf("%3s ", emprestimo.getId());
       System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
       System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-      System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-      System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+      System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+      System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
       System.out.printf("%9s\n", emprestimo.getSituacao());
 
       System.out.println();
@@ -730,7 +764,7 @@ class App {
           System.out.println();
         }
 
-        System.out.println("Data de Empréstimo: " + emprestimo.getDataEmprestimo());
+        System.out.println("Data de Empréstimo: " + dataFormatada(emprestimo.getDataEmprestimo()));
         System.out.print("Alterar data? (s/n): ");
         resposta = scanner.nextLine();
         System.out.println();
@@ -779,8 +813,8 @@ class App {
       System.out.printf("%3s ", emprestimo.getId());
       System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
       System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-      System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-      System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+      System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+      System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
       System.out.printf("%9s\n", emprestimo.getSituacao());
 
       System.out.println();
@@ -824,8 +858,8 @@ class App {
       System.out.printf("%3s ", emprestimo.getId());
       System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
       System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-      System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-      System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+      System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+      System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
       System.out.printf("%9s\n", emprestimo.getSituacao());
 
       System.out.println();
@@ -865,8 +899,8 @@ class App {
       System.out.printf("%3s ", emprestimo.getId());
       System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
       System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-      System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-      System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+      System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+      System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
       System.out.printf("%9s\n", emprestimo.getSituacao());
 
       System.out.println();
@@ -909,8 +943,8 @@ class App {
         System.out.printf("%3s ", emprestimo.getId());
         System.out.printf("%-20s ", emprestimo.getUsuario().getNome());
         System.out.printf("%-20s ", emprestimo.getLivro().getTitulo());
-        System.out.printf("%18s ", emprestimo.getDataEmprestimo());
-        System.out.printf("%17s ", emprestimo.getDataDevolucaoEsperada());
+        System.out.printf("%18s ", dataFormatada(emprestimo.getDataEmprestimo()));
+        System.out.printf("%17s ", dataFormatada(emprestimo.getDataDevolucaoEsperada()));
         System.out.printf("%9s\n", emprestimo.getSituacao());
       }
 
@@ -991,7 +1025,7 @@ class App {
         System.out.println();
         Reserva reserva = new Reserva(usuario, livro);
         facade.solicitarReserva(reserva);
-        System.out.println("Reserva solicitada para: " + reserva.getDataReserva() + ".");
+        System.out.println("Reserva solicitada para " + dataFormatada(reserva.getDataReserva()) + ".");
       }
     } catch (RepositoryException | BibliotecaException ex) {
       System.err.println(ex.getMessage());
@@ -1073,8 +1107,8 @@ class App {
       for (Reserva reserva : reservas) {
         System.out.printf("%-20s ", reserva.getUsuario().getNome());
         System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-        System.out.printf("%19s ", reserva.getDataReserva());
-        System.out.printf("%18s ", reserva.getDataVencimento());
+        System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
+        System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
         System.out.printf("%8s\n", reserva.getSituacao());
       }
     }
@@ -1112,8 +1146,8 @@ class App {
       System.out.printf("==================== ==================== =================== ================== ========\n");
       System.out.printf("%-20s ", reserva.getUsuario().getNome());
       System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-      System.out.printf("%19s ", reserva.getDataReserva());
-      System.out.printf("%18s ", reserva.getDataVencimento());
+      System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
+      System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
       System.out.printf("%8s\n", reserva.getSituacao());
 
       System.out.println();
@@ -1176,8 +1210,8 @@ class App {
       System.out.printf("==================== ==================== =================== ================== ========\n");
       System.out.printf("%-20s ", reserva.getUsuario().getNome());
       System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-      System.out.printf("%19s ", reserva.getDataReserva());
-      System.out.printf("%18s ", reserva.getDataVencimento());
+      System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
+      System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
       System.out.printf("%8s\n", reserva.getSituacao());
 
       System.out.println();
@@ -1206,8 +1240,8 @@ class App {
     for (Reserva reserva : reservas) {
       System.out.printf("%-20s ", reserva.getUsuario().getNome());
       System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-      System.out.printf("%19s ", reserva.getDataReserva());
-      System.out.printf("%18s ", reserva.getDataVencimento());
+      System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
+      System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
       System.out.printf("%8s\n", reserva.getSituacao());
     }
 
@@ -1265,5 +1299,10 @@ class App {
     } catch (RepositoryException | BibliotecaException e) {
       System.out.println(e.getMessage());
     }
+  }
+
+  private static String dataFormatada(LocalDate data) {
+    DateTimeFormatter formatoData = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    return formatoData.format(data);
   }
 }
