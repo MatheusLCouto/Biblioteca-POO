@@ -51,6 +51,17 @@ public class RepositorioReservaLista implements RepositorioReserva {
   }
 
   @Override
+  public List<Reserva> getAll(Usuario usuario) {
+    List <Reserva> reservas_por_usuario = new ArrayList<>();
+    for (Reserva reserva : reservas) {
+      if (reserva.getUsuario().equals(usuario)) {
+        reservas_por_usuario.add(reserva);
+      }
+    }
+    return reservas_por_usuario;
+  }
+
+  @Override
   public List<Reserva> getAll(Livro livro) {
     List <Reserva> reservas_por_livro = new ArrayList<>();
     for (Reserva reserva : reservas) {

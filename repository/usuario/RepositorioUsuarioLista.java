@@ -15,16 +15,16 @@ public class RepositorioUsuarioLista implements RepositorioUsuario {
   @Override
   public void inserirUsuario(Usuario usuario) throws UsuarioJaCadastradoException, CpfJaCadastradoException {
     try {
-      buscarUsuario(usuario.getId());
-      throw new UsuarioJaCadastradoException();
-    } catch (UsuarioNaoCadastradoException ex) {
       for (Usuario verificarCpfUsuario : usuarios) {
         if (verificarCpfUsuario.getCpf().equals(usuario.getCpf())) {
           throw new CpfJaCadastradoException();
         }
       }
-      usuarios.add(usuario);
+    } catch (CpfJaCadastradoException ex) {
+      System.err.printf("\n%s\n", ex.getMessage());
+      throw new UsuarioJaCadastradoException();
     }
+    usuarios.add(usuario);
   }
 
   @Override
@@ -39,7 +39,7 @@ public class RepositorioUsuarioLista implements RepositorioUsuario {
       throw new UsuarioNaoCadastradoException();
     }
   }
-
+  
   @Override
   public Usuario buscarUsuario(String id) throws UsuarioNaoCadastradoException {
 
