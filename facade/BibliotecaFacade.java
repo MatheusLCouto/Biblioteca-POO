@@ -217,8 +217,8 @@ public class BibliotecaFacade {
     for (Emprestimo emprestimo : emprestimos) {
       if (!emprestimo.getSituacao().equals("Devolvido")) {
         if (emprestimo.getUsuario().equals(usuario)) {
-          System.err.println("Livro já está emprestado para o usuário.");
-          throw new BibliotecaException("Não é possivel solicitar reserva para um usuário com empréstimo não devolvido do mesmo livro.");
+          System.err.println("Não foi possível solicitar esta reserva.");
+          throw new BibliotecaException("O usuário possui um empréstimo não devolvido deste livro.");
         }
         else {
           dataReserva = emprestimo.getDataDevolucaoEsperada().plusDays(1);
@@ -226,8 +226,8 @@ public class BibliotecaFacade {
       }
     }
     reserva.setDataReserva(dataReserva);
-    LocalDate dataVencimento = dataReserva;
-    reserva.setDataVencimento(dataVencimento);
+    reserva.setDataVencimento(reserva.getDataReserva());
+    atualizarSituacaoReserva(reserva);
     repositorioReserva.inserirReserva(reserva);
   }
 
@@ -256,38 +256,36 @@ public class BibliotecaFacade {
   public void alterarReserva(Reserva reserva1, Reserva reserva2) throws ReservaNaoEncontradaException, BibliotecaException {
     Usuario usuario = reserva2.getUsuario();
     Livro livro = reserva2.getLivro();
-    try {
-      Emprestimo emprestimo = buscarEmprestimo(usuario, livro);
+    
+    reserva2.setDataReserva(LocalDate.now());
+    
+    List <Emprestimo> emprestimos = getAllEmprestimos(livro);
+    
+    for (Emprestimo emprestimo : emprestimos) {
       if (!emprestimo.getSituacao().equals("Devolvido")) {
-        System.err.println("Não foi possível alterar esta reserva.");
-        throw new BibliotecaException("Usuário possui empréstimo não devolvido do mesmo livro.");
+        if (emprestimo.getUsuario().equals(usuario)) {
+          System.err.println("Não foi possível alterar esta reserva.");
+          throw new BibliotecaException("O usuário possui um empréstimo não devolvido deste livro.");
+        }
+        else {
+          reserva2.setDataReserva(emprestimo.getDataDevolucaoEsperada().plusDays(1));
+        }
+        break;
       }
-      else {
-        throw new EmprestimoNaoEncontradoException();
-      }
-    } catch (EmprestimoNaoEncontradoException | LivroJaEmprestadoException ex) {
-      reserva1.setUsuario(reserva2.getUsuario());
-      reserva1.setLivro(reserva2.getLivro());
     }
+    
+    reserva1.setUsuario(reserva2.getUsuario());
+    reserva1.setLivro(reserva2.getLivro());
+    reserva1.setDataReserva(reserva2.getDataReserva());
+    reserva1.setDataVencimento(reserva1.getDataReserva());
+    
     atualizarSituacaoReserva(reserva1);
     repositorioReserva.alterarReserva(reserva1);
   }
 
   private void atualizarSituacaoReserva(Reserva reserva) {
-    String situacaoLivro = reserva.getLivro().getSituacao();
-    if (!situacaoLivro.equals("Disponível")) {
-      try {
-        Emprestimo emprestimo = buscarEmprestimo(reserva.getUsuario(), reserva.getLivro());
-        LocalDate dataReserva = emprestimo.getDataDevolucaoEsperada().plusDays(1);
-        reserva.setDataReserva(dataReserva);
-        LocalDate dataVencimento = dataReserva;
-        reserva.setDataVencimento(dataVencimento);
-        String situacao = reserva.verificarSituacao();
-        reserva.setSituacao(situacao);
-      } catch (EmprestimoNaoEncontradoException | LivroJaEmprestadoException ex) {
-        System.err.println(ex);
-      }
-    }
+    String situacao = reserva.verificarSituacao();
+    reserva.setSituacao(situacao);
   }
 
   public List<Reserva> getAllReservas(Usuario usuario) {

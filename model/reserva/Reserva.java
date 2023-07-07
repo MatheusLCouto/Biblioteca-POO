@@ -3,15 +3,19 @@ package model.reserva;
 import model.livro.Livro;
 import model.usuario.Usuario;
 import java.time.LocalDate;
+import java.text.DecimalFormat;
 
 public class Reserva {
+  private String id;
   private Livro livro;
   private Usuario usuario;
   private LocalDate dataReserva;
   private LocalDate dataVencimento;
   private String situacao;
+  private static int prox_num = 1;
 
   public Reserva(Usuario usuario, Livro livro) {
+    this.id = gerarId();
     this.usuario = usuario;
     this.livro = livro;
     this.dataReserva = null;
@@ -19,6 +23,11 @@ public class Reserva {
     this.situacao = verificarSituacao();
   }
 
+  private String gerarId() {
+    DecimalFormat decimalFormat = new DecimalFormat("00");
+    return "R" + decimalFormat.format(prox_num++);
+  }
+  
   // Se ultrapassou o dia da solicitação da reserva
   private boolean estaVencida() {
     LocalDate hoje = LocalDate.now();
@@ -30,12 +39,20 @@ public class Reserva {
 
   public String verificarSituacao() {
     if (estaVencida()) {
-      return "Vencida!";
+      return "Expirada";
     } else {
       return "Ativa";
     }
   }
 
+  public String getId() {
+    return this.id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+  
   public Usuario getUsuario() {
     return this.usuario;
   }

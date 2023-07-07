@@ -1046,10 +1046,10 @@ class App {
       limpaTela();
       
       System.out.println("\t\t\t\t\t\t\tLivros presentes na Biblioteca");
-      System.out.print("\tTítulo               Autor                Editora    Ano de Publicação ISBN\n");
-      System.out.print("\t==================== ==================== ========== ================= ====\n");
+      System.out.print("\tTítulo               Autor                     Editora    Ano de Publicação ISBN\n");
+      System.out.print("\t==================== ========================= ========== ================= ====\n");
       for (Livro livro : livros) {
-        System.out.printf("\t%-20s ", livro.getTitulo());
+        System.out.printf("\t%-25s ", livro.getTitulo());
         System.out.printf("%-20s ", livro.getAutor());
         System.out.printf("%-10s ", livro.getEditora());
         System.out.printf("%17s ", String.valueOf(livro.getAnoPublicacao()));
@@ -1071,56 +1071,60 @@ class App {
       }
     
       System.out.println();
-      if (opcao == 1) {
-        System.out.print("ID do usuário: ");
-        String id = scanner.nextLine();
-        try {
+      try {
+        if (opcao == 1) {
+          System.out.print("ID do usuário: ");
+          String id = scanner.nextLine();
           Usuario usuario = facade.buscarUsuario(id);
           reservas = facade.getAllReservas(usuario);
-          break;
-        } catch (RepositoryException ex) {
-          System.err.println(ex.getMessage());
-          break;
         }
-      }
-      else if (opcao == 2) {
-        System.out.print("ISBN do livro: ");
-        String isbn = scanner.nextLine();
-        try {
+        else if (opcao == 2) {
+          System.out.print("ISBN do livro: ");
+          String isbn = scanner.nextLine();
           Livro livro = facade.buscarLivro(isbn);
           reservas = facade.getAllReservas(livro);
-          break;
-        } catch (RepositoryException ex) {
-          System.err.println(ex.getMessage());
+        }
+        else if (opcao == 0) {
           break;
         }
-      }
-      else if (opcao == 0) {
-        return;
-      }
-    }
 
-    if (!reservas.isEmpty()) {
-      limpaTela();
-      System.out.printf("Usuário              Livro                Data da Solicitação Data de Vencimento Situação\n");
-      System.out.printf("==================== ==================== =================== ================== ========\n");
-      for (Reserva reserva : reservas) {
-        System.out.printf("%-20s ", reserva.getUsuario().getNome());
-        System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-        System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
-        System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
-        System.out.printf("%8s\n", reserva.getSituacao());
+        if (reservas.isEmpty()) {
+          System.out.print("\nNão há reservas solicitadas para este ");
+          if (opcao == 1) {
+            System.out.println("usuário.");
+          }
+          else if (opcao == 2) {
+            System.out.println("livro.");
+          }
+          System.out.println();
+          System.out.println("tecle <enter> para voltar");
+          scanner.nextLine();
+        }
+        else {
+          exibirReservas(reservas);
+        }  
+      } catch (RepositoryException ex) {
+        System.err.println(ex.getMessage());
+        System.out.println();
+        System.out.println("tecle <enter> para voltar");
+        scanner.nextLine();
       }
     }
-    else {
-      if (opcao == 1) {
-        System.err.println("\nNão há reservas solicitadas para este usuário.");
-      }
-      else if (opcao == 2) {
-        System.err.println("\nNão há reservas solicitadas para este livro.");
-      } 
-    }
+  }
 
+  private static void exibirReservas(List<Reserva> reservas) {
+    limpaTela();
+    System.out.printf("ID  Usuário              Livro                     Data da Solicitação Data de Vencimento Situação\n");
+    System.out.printf("=== ==================== ========================= =================== ================== ========\n");
+    for (Reserva reserva : reservas) {
+      System.out.printf("%3s ", reserva.getId());
+      System.out.printf("%-20s ", reserva.getUsuario().getNome());
+      System.out.printf("%-25s ", reserva.getLivro().getTitulo());
+      System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
+      System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
+      System.out.printf("%8s\n", reserva.getSituacao());
+    }
+    
     System.out.println();
     System.out.println("tecle <enter> para voltar");
     scanner.nextLine();
@@ -1142,10 +1146,11 @@ class App {
       Reserva reservaAlterada = new Reserva(usuario, livro);
 
       System.out.println();
-      System.out.printf("Usuário              Livro                Data da Solicitação Data de Vencimento Situação\n");
-      System.out.printf("==================== ==================== =================== ================== ========\n");
+      System.out.printf("ID  Usuário              Livro                     Data da Solicitação Data de Vencimento Situação\n");
+      System.out.printf("=== ==================== ========================= =================== ================== ========\n");
+      System.out.printf("%3s ", reserva.getId());
       System.out.printf("%-20s ", reserva.getUsuario().getNome());
-      System.out.printf("%-20s ", reserva.getLivro().getTitulo());
+      System.out.printf("%-25s ", reserva.getLivro().getTitulo());
       System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
       System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
       System.out.printf("%8s\n", reserva.getSituacao());
@@ -1206,10 +1211,11 @@ class App {
       Livro livro = facade.buscarLivro(isbn);
       Reserva reserva = facade.buscarReserva(usuario, livro);
       System.out.println();
-      System.out.printf("Usuário              Livro                Data da Solicitação Data de Vencimento Situação\n");
-      System.out.printf("==================== ==================== =================== ================== ========\n");
+      System.out.printf("ID  Usuário              Livro                     Data da Solicitação Data de Vencimento Situação\n");
+      System.out.printf("=== ==================== ========================= =================== ================== ========\n");
+      System.out.printf("%3s ", reserva.getId());
       System.out.printf("%-20s ", reserva.getUsuario().getNome());
-      System.out.printf("%-20s ", reserva.getLivro().getTitulo());
+      System.out.printf("%-25s ", reserva.getLivro().getTitulo());
       System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
       System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
       System.out.printf("%8s\n", reserva.getSituacao());
@@ -1233,21 +1239,8 @@ class App {
   }
 
   private static void listarReservas() {
-    limpaTela();
     List<Reserva> reservas = facade.getAllReservas();
-    System.out.printf("Usuário              Livro                Data da Solicitação Data de Vencimento Situação\n");
-    System.out.printf("==================== ==================== =================== ================== ========\n");
-    for (Reserva reserva : reservas) {
-      System.out.printf("%-20s ", reserva.getUsuario().getNome());
-      System.out.printf("%-20s ", reserva.getLivro().getTitulo());
-      System.out.printf("%19s ", dataFormatada(reserva.getDataReserva()));
-      System.out.printf("%18s ", dataFormatada(reserva.getDataVencimento()));
-      System.out.printf("%8s\n", reserva.getSituacao());
-    }
-
-    System.out.println();
-    System.out.println("tecle <enter> para voltar");
-    scanner.nextLine();    
+    exibirReservas(reservas); 
   }
 
   private static void CriaDadosDeTeste() {
