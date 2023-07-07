@@ -1253,27 +1253,27 @@ class App {
   private static void CriaDadosDeTeste() {
     try {
       //Livros testes
-      facade.inserirLivro(new Livro("O Homem de Giz", "C. J. Tudor", "001", "Intrísica", 2018));
-      facade.inserirLivro(new Livro("O Homem de Giz", "C. J. Tudor", "002", "Intrísica", 2018));
-      facade.inserirLivro(new Livro("O Homem de Giz", "C. J. Tudor", "003", "Intrísica", 2018));
-      facade.inserirLivro(new Livro("Bird Box", "Josh Malerman", "004", "Intrísica", 2014));
-      facade.inserirLivro(new Livro("Bird Box", "Josh Malerman", "005", "Intrísica", 2014));
-      facade.inserirLivro(new Livro("C: como programar", "Harvey M. Deitel", "006", "Pearson", 2011));
+      facade.inserirLivro(new Livro("Código Limpo", "Robert C. Martin", "001", "Alta Books", 2009));
+      facade.inserirLivro(new Livro("Código Limpo", "Robert C. Martin", "002", "Alta Books", 2009));
+      facade.inserirLivro(new Livro("Banco de Dados", "Carlos A. Heuser", "003", "Bookman", 2009));
+      facade.inserirLivro(new Livro("Banco de Dados", "Carlos A. Heuser", "004", "Bookman", 2009));
+      facade.inserirLivro(new Livro("Inteligência Artificial", "Stuart Russell", "005", "Pearson", 2014));
+      facade.inserirLivro(new Livro("Inteligência Artificial", "Stuart Russell", "006", "Pearson", 2011));
       facade.inserirLivro(new Livro("C: como programar", "Harvey M. Deitel", "007", "Pearson", 2011));
-      facade.inserirLivro(new Livro("Java: como programar", "Harvey M. Deitel", "008", "Pearson", 2011));
+      facade.inserirLivro(new Livro("C: como programar", "Harvey M. Deitel", "008", "Pearson", 2011));
       facade.inserirLivro(new Livro("Java: como programar", "Harvey M. Deitel", "009", "Pearson", 2017));
       facade.inserirLivro(new Livro("Java: como programar", "Harvey M. Deitel", "010", "Pearson", 2011));
 
       //Usuários testes
-      facade.inserirUsuario(new Usuario("José Silva", "123.456.789-00", "99123-4567"));
-      facade.inserirUsuario(new Usuario("Fernanda Costa", "123.456.789-01", "99765-4321"));
-      facade.inserirUsuario(new Usuario("Ana Castro", "123.456.789-02", "99999-9999"));
-      facade.inserirUsuario(new Usuario("João Batista", "123.456.789-03", "99191-9191"));
-      facade.inserirUsuario(new Usuario("Paula Leite", "123.456.789-04", "99876-5432"));
+      facade.inserirUsuario(new Usuario("José Silva", "123.456.789-00", "93991234567"));
+      facade.inserirUsuario(new Usuario("Fernanda Costa", "123.456.789-01", "93997654321"));
+      facade.inserirUsuario(new Usuario("Ana Castro", "123.456.789-02", "93999999999"));
+      facade.inserirUsuario(new Usuario("João Batista", "123.456.789-03", "93991919191"));
+      facade.inserirUsuario(new Usuario("Paula Leite", "123.456.789-04", "93998765432"));
 
       //Empréstimos testes
       LocalDate hoje = LocalDate.now();
-      Livro livro = facade.buscarLivro("008"); // Java: como programar
+      Livro livro = facade.buscarLivro("008"); // C: como programar
       Usuario usuario = facade.buscarUsuario("04"); // João Batista
       // 10 dias atrás
       facade.realizarEmprestimo(new Emprestimo(usuario, livro, hoje.plusDays(-10)));
@@ -1283,7 +1283,7 @@ class App {
       facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("05"), facade.buscarLivro("004"), hoje.plusDays(-7)));
       // 6 dias atrás
       facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("03"), livro, hoje.plusDays(-6)));
-      facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("03"),facade.buscarLivro("007"),hoje.plusDays(-6)));
+      facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("03"),facade.buscarLivro("006"),hoje.plusDays(-6)));
       // 4 dias atrás
       facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("04"), facade.buscarLivro("005"), hoje.plusDays(-4)));
       // 3 dias atrás
@@ -1293,7 +1293,7 @@ class App {
       facade.realizarEmprestimo(new Emprestimo(facade.buscarUsuario("01"), facade.buscarLivro("004"), hoje));
       
       //Reservas testes
-      facade.solicitarReserva(new Reserva(facade.buscarUsuario("02"), facade.buscarLivro("004")));
+      facade.solicitarReserva(new Reserva(facade.buscarUsuario("02"), facade.buscarLivro("006")));
       facade.solicitarReserva(new Reserva(facade.buscarUsuario("02"), facade.buscarLivro("005")));
       facade.solicitarReserva(new Reserva(facade.buscarUsuario("02"), facade.buscarLivro("002")));
     } catch (RepositoryException | BibliotecaException e) {
