@@ -15,6 +15,8 @@ public interface RepositorioReserva {
 
   Reserva buscarReserva(Usuario usuario, Livro livro) throws ReservaNaoEncontradaException;
 
+  List<Reserva> getAll(Usuario usuario);
+
   List<Reserva> getAll(Livro livro);
 
   List<Reserva> getAll();
