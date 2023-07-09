@@ -21,24 +21,20 @@ public class Usuario {
     return decimalFormat.format(prox_num++);
   }
 
-  public void alterarId() {
-    this.id = gerarId();
-  }
-
-  public String getNome() {
-    return this.nome;
-  }
-
-  public void setNome(String nome) {
-    this.nome = nome;
-  }
-
   public String getId() {
     return this.id;
   }
 
   public void setId(String id) {
     this.id = id;
+  }
+  
+  public String getNome() {
+    return this.nome;
+  }
+
+  public void setNome(String nome) {
+    this.nome = nome;
   }
 
   public String getCpf() {
